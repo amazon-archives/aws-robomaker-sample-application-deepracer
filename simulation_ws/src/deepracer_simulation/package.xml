@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package>
+  <name>deepracer_simulation</name>
+  <version>1.0.0</version>
+  <description>
+    Teaches a racecar to drive in a simulation through reinforcement learning.
+  </description>
+  <maintainer email="ros-contributions@amazon.com">AWS RoboMaker</maintainer>
+  <license>Apache2.0</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>ackermann_msgs</build_depend>
+  <build_depend>gazebo</build_depend>
+  <build_depend>gazebo_ros</build_depend>
+  <build_depend>python3-dev</build_depend>
+
+  <run_depend>ackermann_msgs</run_depend>
+  <run_depend>controller_manager</run_depend>
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>gazebo</run_depend>
+  <run_depend>gazebo_plugins</run_depend>
+  <run_depend>gazebo_ros_control</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>ros_control</run_depend>
+  <run_depend>ros_controllers</run_depend>
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <gazebo_ros gazebo_model_path="${prefix}/.." />
+    <gazebo_ros plugin_path="${prefix}/.." />
+  </export>
+</package>

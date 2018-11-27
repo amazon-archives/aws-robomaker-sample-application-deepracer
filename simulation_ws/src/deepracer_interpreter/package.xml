@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <name>deepracer_interpreter</name>
+  <version>1.0.0</version>
+  <description>The DeepRacerInterpreter package</description>
+  <maintainer email="gouravr@amazon.com">gouravr</maintainer>
+  <license>Apache2.0</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>gazebo_ros</build_depend>
+  <build_depend>deepracer_msgs</build_depend>
+  <build_depend>gazebo</build_depend>
+
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>gazebo</run_depend>
+  <run_depend>controller_manager</run_depend>
+  <run_depend>ros_controllers</run_depend>
+  <run_depend>ros_control</run_depend>
+  <run_depend>gazebo_ros_control</run_depend>
+  <run_depend>deepracer_msgs</run_depend>
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <gazebo_ros gazebo_model_path="${prefix}/.." />
+    <gazebo_ros plugin_path="${prefix}/.." />
+  </export>
+</package>
