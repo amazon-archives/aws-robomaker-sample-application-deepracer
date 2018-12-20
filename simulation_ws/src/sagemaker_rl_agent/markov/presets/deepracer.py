@@ -11,6 +11,7 @@ from rl_coach.filters.filter import NoInputFilter, NoOutputFilter, InputFilter
 from rl_coach.filters.observation.observation_stacking_filter import ObservationStackingFilter
 from rl_coach.filters.observation.observation_rgb_to_y_filter import ObservationRGBToYFilter
 from rl_coach.filters.observation.observation_to_uint8_filter import ObservationToUInt8Filter
+from rl_coach.memories.memory import MemoryGranularity
 
 ####################
 # Graph Scheduling #
@@ -44,6 +45,7 @@ agent_params.algorithm.estimate_state_value_using_gae = True
 agent_params.algorithm.num_steps_between_copying_online_weights_to_target = EnvironmentEpisodes(20)
 agent_params.algorithm.num_consecutive_playing_steps = EnvironmentEpisodes(20)
 agent_params.exploration = CategoricalParameters()
+agent_params.memory.max_size = (MemoryGranularity.Transitions, 10**5)
 
 ###############
 # Environment #
