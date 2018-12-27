@@ -71,6 +71,7 @@ The following environment variables must be set when you run your simulation:
 - `MARKOV_PRESET_FILE` - Defines the hyperparameters of the reinforcement learning algorithm. This should be set to `deepracer.py`.
 - `MODEL_S3_BUCKET` - The name of the S3 bucket in which you want to store the trained model.
 - `MODEL_S3_PREFIX` - The path where you want to store the model.
+- `WORLD_NAME` - The track to train the model on. Can be one of easy_track, medium_track, or hard_track.
 - `ROS_AWS_REGION` - The region of the S3 bucket in which you want to store the model.
 - `AWS_ACCESS_KEY_ID` - The access key for the role you created in the "AWS Permissions" section
 - `AWS_SECRET_ACCESS_KEY` - The secret access key for the role you created in the "AWS Permissions" section
