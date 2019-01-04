@@ -6,12 +6,17 @@
 #include <gazebo/physics/physics.hh>
 #include <gazebo/common/common.hh>
 #include <ignition/math/Vector3.hh>
-#include <gazebo/math/Vector3.hh>
 
 #include "ros/ros.h"
 #include "deepracer_msgs/Progress.h"
 
 #include "racecar_plugin.hh"
+
+#if GAZEBO_MAJOR_VERSION >= 9
+#include <ignition/math/Pose3.hh>
+#else
+#include <gazebo/math/Vector3.hh>
+#endif
 
 void gazebo::RacecarPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr /*_sdf*/)
 {
@@ -21,7 +26,12 @@ void gazebo::RacecarPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr /*_s
   ros::NodeHandle n;
   chatter_pub = n.advertise<deepracer_msgs::Progress>("progress", 1000);
 
+#if GAZEBO_MAJOR_VERSION >= 9
+  worldName = _parent->GetWorld()->Name();
+#else
   worldName = _parent->GetWorld()->GetName();
+#endif
+
   std::cout << "******* World name is: " << worldName << " *********\n";
 
   // Setup the world properties
@@ -56,14 +66,25 @@ void gazebo::RacecarPlugin::sendProgress(const int off_track, const double yaw, 
   }
 }
 
+#if GAZEBO_MAJOR_VERSION >= 9
+ignition::math::Vector3<double> gazebo::RacecarPlugin::getCarPosition(const ignition::math::Pose3<double> pose)
+{
+  return pose.CoordPositionAdd(RELATIVE_POSITION_OF_FRONT_OF_CAR);
+}
+#else
 gazebo::math::Vector3 gazebo::RacecarPlugin::getCarPosition(const gazebo::math::Pose pose)
 {
   return pose.CoordPositionAdd(RELATIVE_POSITION_OF_FRONT_OF_CAR);
 }
+#endif
 
 void gazebo::RacecarPlugin::OnUpdate()
 {
+#if GAZEBO_MAJOR_VERSION >= 9
+  ignition::math::Pose3<double> pose = this->model->WorldPose();
+#else
   gazebo::math::Pose pose = this->model->GetWorldPose();
+#endif
 
   double distanceFromCenter = 0;
   double distanceFromBorder1 = 0;
@@ -72,14 +93,25 @@ void gazebo::RacecarPlugin::OnUpdate()
   // Currently the origin of the car is at the rear center of the car.
   // This is to get the co-ordinate of the front center of the car so
   // that we can get more accurate on/off road data
+#if GAZEBO_MAJOR_VERSION >= 9
+  ignition::math::Vector3<double> carPosition = getCarPosition(pose);
+#else
   gazebo::math::Vector3 carPosition = getCarPosition(pose);
+#endif
 
   // Round to 2 decimal places to avoid precision error (Avoid constantly
   // increasing progress when car is not moving).
+#if GAZEBO_MAJOR_VERSION >= 9
+  double x = floor(carPosition.X() * 100) / 100;
+  double y = floor(carPosition.Y() * 100) / 100;
+  double z = floor(carPosition.Z() * 100) / 100;
+  double yaw = pose.Rot().Yaw();
+#else
   double x = floor(carPosition.x * 100) / 100;
   double y = floor(carPosition.y * 100) / 100;
   double z = floor(carPosition.z * 100) / 100;
   double yaw = pose.rot.GetYaw();
+#endif
 
   int offTrack = 0;
 

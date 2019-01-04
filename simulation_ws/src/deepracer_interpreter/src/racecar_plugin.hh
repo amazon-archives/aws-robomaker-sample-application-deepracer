@@ -8,12 +8,17 @@
 
 #include <gazebo/common/common.hh>
 #include <gazebo/gazebo.hh>
-#include <gazebo/math/Vector3.hh>
 #include <gazebo/physics/physics.hh>
 #include <ignition/math/Vector3.hh>
 
 #include "ros/ros.h"
 #include "deepracer_msgs/Progress.h"
+
+#if GAZEBO_MAJOR_VERSION >= 9
+#include <ignition/math/Pose3.hh>
+#else
+#include <gazebo/math/Vector3.hh>
+#endif
 
 namespace gazebo
 {
@@ -25,7 +30,11 @@ class RacecarPlugin : public ModelPlugin
                     const double progrezz, const double distanceFromCenter, const double distanceFromBorder1,
                     const double distanceFromBorder2);
 
+#if GAZEBO_MAJOR_VERSION >= 9
+  ignition::math::Vector3<double> getCarPosition(const ignition::math::Pose3<double> pose);
+#else
   gazebo::math::Vector3 getCarPosition(const gazebo::math::Pose pose);
+#endif
 
   void OnUpdate();
 
@@ -59,7 +68,12 @@ private:
   int MAX_POLYGON_VERTEX = 100;
   double MAX_VALUE = 9999999;
   double EPSILON = 1e-6;
+
+#if GAZEBO_MAJOR_VERSION >= 9
+  ignition::math::Vector3<double> RELATIVE_POSITION_OF_FRONT_OF_CAR = ignition::math::Vector3<double>(0.25, 0, 0);
+#else
   gazebo::math::Vector3 RELATIVE_POSITION_OF_FRONT_OF_CAR = gazebo::math::Vector3(0.25, 0, 0);
+#endif
 
   double vertices[100][2];
   double numberOfVertices = 0;
