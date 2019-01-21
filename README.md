@@ -2,7 +2,7 @@
 
 This Sample Application runs a simulation which trains a reinforcement learning (RL) model to drive a car around a track.
 
-_RoboMaker sample applications include third-party software licensed under open-source licenses and is provided for demonstration purposes only. Incorporation or use of RoboMaker sample applications in connection with your production workloads or a commercial products or devices may affect your legal rights or obligations under the applicable open-source licenses. Source code information can be found [here](https://s3.console.aws.amazon.com/s3/buckets/robomaker-applications-us-east-1-72fc243f9355/deep-racer/?region=us-east-1)._
+_AWS RoboMaker sample applications include third-party software licensed under open-source licenses and is provided for demonstration purposes only. Incorporation or use of RoboMaker sample applications in connection with your production workloads or a commercial products or devices may affect your legal rights or obligations under the applicable open-source licenses. Source code information can be found [here](https://s3.console.aws.amazon.com/s3/buckets/robomaker-applications-us-east-1-72fc243f9355/deep-racer/?region=us-east-1)._
 
 Keywords: Reinforcement learning, AWS, RoboMaker
 
@@ -119,11 +119,13 @@ while the second is when the algorithm uses the information gathered in the firs
 phase, no new commands are sent to the car, meaning it will appear as if it is stopped, spinning in circles, or drifting off
 aimlessly.
 
-## Using this sample with RoboMaker
+## Using this sample with AWS RoboMaker
 
 You first need to install colcon. Python 3.5 or above is required.
 
 ```bash
+apt-get update
+apt-get install -y python3-pip python3-apt
 pip3 install colcon-ros-bundle
 ```
 
@@ -138,7 +140,7 @@ colcon bundle
 This produces `simulation_ws/build/output.tar.gz`.
 You'll need to upload this artifact to an S3 bucket. You can then use the bundle to
 [create a simulation application](https://docs.aws.amazon.com/robomaker/latest/dg/create-simulation-application.html),
-and [create a simulation job](https://docs.aws.amazon.com/robomaker/latest/dg/create-simulation-job.html) in RoboMaker.
+and [create a simulation job](https://docs.aws.amazon.com/robomaker/latest/dg/create-simulation-job.html) in AWS RoboMaker.
 
 ## License
 
