@@ -5,14 +5,14 @@
 
 <xacro:macro name="chassis_inertial_params">
   <origin xyz="0.1477 0 0" rpy="0 0 0" />
-  <mass value="4.0" />
+  <mass value="5.0" />
   <inertia ixx="0.010609" ixy="0"          ixz="0"
                           iyy="0.050409"   iyz="0"
                                            izz="0.05865" />
 </xacro:macro>
 
 <xacro:macro name="left_wheels_inertial_params">
-  <origin xyz="0 0 -0.0225" rpy="0 0 0" />
+  <origin xyz="0 0 -0.0125" rpy="0 0 0" />
   <mass value="0.34055" />
   <inertia ixx="0.00026046" ixy="0"          ixz="0"
                             iyy="0.00026046" iyz="0"
@@ -20,7 +20,7 @@
 </xacro:macro>
 
 <xacro:macro name="right_wheels_inertial_params">
-  <origin xyz="0 0 0.0225" rpy="0 0 0" />
+  <origin xyz="0 0 0.0125" rpy="0 0 0" />
   <mass value="0.34055" />
   <inertia ixx="0.00026046" ixy="0"          ixz="0"
                             iyy="0.00026046" iyz="0"
@@ -48,56 +48,56 @@
 <xacro:macro name="left_rear_wheel_geometry">
   <origin xyz="0 0 0" rpy="0 0 0" />
   <geometry>
-    <mesh filename="package://deepracer_simulation/meshes/left_rear_wheel.STL" />
+    <mesh scale="0.6 0.6 0.6" filename="package://deepracer_simulation/meshes/left_rear_wheel.STL" />
   </geometry>
 </xacro:macro>
 
 <xacro:macro name="right_rear_wheel_geometry">
   <origin xyz="0 0 0" rpy="0 0 0" />
   <geometry>
-    <mesh filename="package://deepracer_simulation/meshes/right_rear_wheel.STL" />
+    <mesh scale="0.6 0.6 0.6" filename="package://deepracer_simulation/meshes/right_rear_wheel.STL" />
   </geometry>
 </xacro:macro>
 
 <xacro:macro name="left_front_wheel_geometry">
   <origin xyz="0 0 0" rpy="0 0 0" />
   <geometry>
-    <mesh filename="package://deepracer_simulation/meshes/left_front_wheel.STL" />
+    <mesh scale="0.6 0.6 0.6" filename="package://deepracer_simulation/meshes/left_front_wheel.STL" />
   </geometry>
 </xacro:macro>
 
 <xacro:macro name="right_front_wheel_geometry">
   <origin xyz="0 0 0" rpy="0 0 0" />
   <geometry>
-    <mesh filename="package://deepracer_simulation/meshes/right_front_wheel.STL" />
+    <mesh scale="0.6 0.6 0.6" filename="package://deepracer_simulation/meshes/right_front_wheel.STL" />
   </geometry>
 </xacro:macro>
 
 <xacro:macro name="left_steering_hinge_geometry">
   <origin xyz="0 0 0" rpy="0 0 0" />
   <geometry>
-    <mesh filename="package://deepracer_simulation/meshes/left_steering_hinge.STL" />
+    <mesh scale="0.6 0.6 0.6" filename="package://deepracer_simulation/meshes/left_steering_hinge.STL" />
   </geometry>
 </xacro:macro>
 
 <xacro:macro name="right_steering_hinge_geometry">
   <origin xyz="0 0 0" rpy="0 0 0" />
   <geometry>
-    <mesh filename="package://deepracer_simulation/meshes/right_steering_hinge.STL" />
+    <mesh scale="0.6 0.6 0.6" filename="package://deepracer_simulation/meshes/right_steering_hinge.STL" />
   </geometry>
 </xacro:macro>
 
 <xacro:macro name="left_wheels_collision_geometry">
-  <origin xyz="0 0 -0.0225" rpy="0 0 0" />
+  <origin xyz="0 0 -0.0125" rpy="0 0 0" />
   <geometry>
-    <cylinder length="0.045" radius="0.05" />
+    <cylinder length="0.025" radius="0.03" />
   </geometry>
 </xacro:macro>
 
 <xacro:macro name="right_wheels_collision_geometry">
-  <origin xyz="0 0 0.0225" rpy="0 0 0" />
+  <origin xyz="0 0 0.0125" rpy="0 0 0" />
   <geometry>
-    <cylinder length="0.045" radius="0.05" />
+    <cylinder length="0.025" radius="0.03" />
   </geometry>
 </xacro:macro>
 
