@@ -60,7 +60,7 @@ cd simulation_ws
 rosws update
 rosdep install --from-paths src --ignore-src -r -y
 colcon build
-colcon bundle
+colcon bundle --bundle-version 1
 ```
 
 #### Running the simulation
@@ -134,7 +134,7 @@ After colcon is installed you need to build your robot or simulation, then you c
 ```bash
 # Bundling Simulation Application
 cd simulation_ws
-colcon bundle
+colcon bundle --bundle-version 1
 ```
 
 This produces `simulation_ws/bundle/output.tar.gz`.
