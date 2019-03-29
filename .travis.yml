@@ -1,0 +1,53 @@
+sudo: required
+language: generic
+compiler:
+- gcc
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+    recipients:
+    - ros-contributions@amazon.com
+env:
+  matrix:
+  - ROS_DISTRO=kinetic ROS_VERSION=1 GAZEBO_VERSION=7
+  - ROS_DISTRO=kinetic ROS_VERSION=1 GAZEBO_VERSION=9
+  global:
+  - SA_NAME=deep-racer
+  - SA_PACKAGE_NAME=deepracer_simulation
+  - NO_TEST=true
+  - GH_USER_NAME="travis-ci"
+  - GH_USER_EMAIL="travis@travis-ci.org"
+  - AWS_DEFAULT_REGION=us-west-2
+  - WORKSPACES="simulation_ws"
+  - secure: GFbQnuGL0zklbZuql40iD6PUxaPvWR8HmWzHYvpAqd2UlBybg3r1ZL9oarx2/Ivrr7EKxfirFiRljD79UapVdlJoIB9A8TuDNDXy85QHNTjCHfk/G6A6ccdHelljWBkW614reLJYv9fLtx+vd16QpxDmteePmwRRehDadpF5arRYgH2OsT7dl9zlRcr5KWklAtq9e3m1Z0+mCHySrla4aqj0Ue2jkbsefryS2wjLA1Hh6t9mYDSAEd20d60XhuSTu0DDrBc4CO+qWRX8UfDG0fzAAHIiR9xg6oy3PiFM256McyRphpuUs29HhuBw0PrvaoQ5UZlhrS6Tntu/vObdIpxf64pG/8Xj5o/kpeLIUI8ezN1SzLaMrjiGtiZnBoTuNObQFLAduXveHwLw69izu2rYmRF3WMrQJypuR8qhYDscP03pM1OVpcRM7qh2gtGXjKGKnq9GlMBGoQl4AHzqJ+qCC5tKjrxxFvKcA9nS9Kws3G7/B9XPlmz6Qxj/JA0d3bc0X93hTlEHNWyR0MfnrC2N7wC1eWRfMrLyaZmL60lF3uNbFLwOCKD6YPEnwcmooNxAmaCwvWDlj8YRp4M48u7qO3xHEN0jonhq5rcp4E6unIGfZWdvDGlf3ZuBJvHzK3EoX5Nmp7SUzY0oG+lSKji8DmD5xsBfDytM9kORd/s=
+  - secure: iFe5aEqFzYYKIFssszACJDdonn666z05ZbC4NsLBiRQ2tRH+ZYdjSQmIuh+kEUq9t8bqksJbOa52Kt3XTK7wNXQiLogm5PSk8gCk5atVJg32LmTOTvIwR/OwRTWPnT0bzUeU/x/hIRwU3TTxMXTQDANx1iRP6ot34KC5FtTf4ZmCL+mWVjpe1ykHqGm2YSEA1vdZoyNHdTSnyOoFyaUTu8GrTxg8nENFBGUvhwrg2lmGy0H/BHq1gQWQHG21NOep/LmTfywVTdS1TTSDJeZUZtQ/Xo/COLUXENIid/ofvHzrhPyreRfVGp+A0LvAc9iZ/hRziEOHQ3TS2R+S+xdkN+dwJqVjBkN3G2JbE03cGAGZPlMyUqeadtrpUx4l/kIW3kMk33QHaxghD1fdi/ITiUXVb4CuUf5jsVsg5FIkV2v6yWFDEWV3ybM0ZEJNbdYIFNXa72iEPafLySRm2CYJ2bQOFN2eVSFfzmp3jF1CaMWzmbn8yi0PVs2xw27VC16Hj7kT/bRhhwIomM/wCLL4o9lElIG66jwx621coNXH+ZVPoIKkgOXKznNet7jjQPMWVwukWeU3GUbqXRJd2KrJ2wRa3PbpXyKJr8eRpD17JTwDO1w0SFKGkf4mLsNC99Qm4w3jUNFI2msBLNQ8EWhwMMHA9V6S5ujFWLKF1/1lI64=
+before_install:
+- openssl aes-256-cbc -K $encrypted_670ffd5d6b74_key -iv $encrypted_670ffd5d6b74_iv
+  -in github_deploy.pem.enc -out github_deploy.pem -d
+- pip install --user awscli
+install:
+- git clone --branch ws-builds https://github.com/aws-robotics/travis-scripts.git
+  .ros_ci
+script:
+- ". .ros_ci/add_tag.sh"
+- ".ros_ci/ros1_build.sh"
+before_deploy:
+- ". .ros_ci/before_deploy.sh"
+deploy:
+- provider: s3
+  access_key_id: "$AWS_ACCESS_KEY_ID"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+  bucket: "$S3_BUCKET_NAME"
+  local_dir: shared
+  skip_cleanup: true
+  wait-until-deployed: true
+  on:
+    branch: master
+  upload-dir: travis/${SA_NAME}/${ROS_DISTRO}/gazebo${GAZEBO_VERSION}
+- provider: script
+  script: bash .ros_ci/codepipeline_deploy.sh
+  on:
+    branch: master
+after_deploy:
+- ".ros_ci/post_deploy.sh"
