@@ -134,7 +134,7 @@ After colcon is installed you need to build your robot or simulation, then you c
 ```bash
 # Bundling Simulation Application
 cd simulation_ws
-colcon bundle --bundle-version 1
+colcon bundle
 ```
 
 This produces `simulation_ws/bundle/output.tar.gz`.
