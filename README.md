@@ -137,7 +137,7 @@ cd simulation_ws
 colcon bundle
 ```
 
-This produces `simulation_ws/bundle/output.tar.gz`.
+This produces `simulation_ws/bundle/output.tar`.
 You'll need to upload this artifact to an S3 bucket. You can then use the bundle to
 [create a simulation application](https://docs.aws.amazon.com/robomaker/latest/dg/create-simulation-application.html),
 and [create a simulation job](https://docs.aws.amazon.com/robomaker/latest/dg/create-simulation-job.html) in AWS RoboMaker.
