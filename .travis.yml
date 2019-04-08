@@ -27,13 +27,12 @@ before_install:
   -in github_deploy.pem.enc -out github_deploy.pem -d
 - pip install --user awscli
 install:
-- git clone --branch ws-builds https://github.com/aws-robotics/travis-scripts.git
-  .ros_ci
+- git clone https://github.com/aws-robotics/travis-scripts.git .ros_ci
 script:
-- ". .ros_ci/add_tag.sh"
-- ".ros_ci/ros1_build.sh"
+- . .ros_ci/add_tag.sh
+- travis_wait 50 .ros_ci/ce_build.sh
 before_deploy:
-- ". .ros_ci/before_deploy.sh"
+- . .ros_ci/before_deploy.sh
 deploy:
 - provider: s3
   access_key_id: "$AWS_ACCESS_KEY_ID"
@@ -50,4 +49,4 @@ deploy:
   on:
     branch: master
 after_deploy:
-- ".ros_ci/post_deploy.sh"
+- .ros_ci/post_deploy.sh
