@@ -60,7 +60,7 @@ cd simulation_ws
 rosws update
 rosdep install --from-paths src --ignore-src -r -y
 colcon build
-colcon bundle --bundle-version 1
+colcon bundle
 ```
 
 #### Running the simulation
@@ -134,10 +134,10 @@ After colcon is installed you need to build your robot or simulation, then you c
 ```bash
 # Bundling Simulation Application
 cd simulation_ws
-colcon bundle --bundle-version 1
+colcon bundle
 ```
 
-This produces `simulation_ws/bundle/output.tar.gz`.
+This produces `simulation_ws/bundle/output.tar`.
 You'll need to upload this artifact to an S3 bucket. You can then use the bundle to
 [create a simulation application](https://docs.aws.amazon.com/robomaker/latest/dg/create-simulation-application.html),
 and [create a simulation job](https://docs.aws.amazon.com/robomaker/latest/dg/create-simulation-job.html) in AWS RoboMaker.
