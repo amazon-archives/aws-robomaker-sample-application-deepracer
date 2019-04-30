@@ -26,7 +26,7 @@ setup(
         'redis==2.10.6',
         'rospkg==1.1.7',
         'scipy==0.19.0',
-        'tensorflow==1.11',
+        'tensorflow==1.12.2',
         'rl-coach-slim==0.11.1'
     ],
     entry_points = {
