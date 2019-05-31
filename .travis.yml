@@ -30,7 +30,7 @@ install:
 - git clone https://github.com/aws-robotics/travis-scripts.git .ros_ci
 script:
 - ". .ros_ci/add_tag.sh"
-- travis_wait 50 .ros_ci/ce_build.sh
+- travis_wait 100 .ros_ci/ce_build.sh
 before_deploy:
 - ". .ros_ci/before_deploy.sh"
 deploy:
