@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <launch>
+    <arg name="gui" default="false" />
+
     <param name="WORLD_NAME" value="$(env WORLD_NAME)" />
     <param name="MODEL_S3_BUCKET" value="$(env MODEL_S3_BUCKET)" />
     <param name="MODEL_S3_PREFIX" value="$(env MODEL_S3_PREFIX)" />
@@ -8,6 +10,7 @@
 
     <include file="$(find deepracer_simulation)/launch/racetrack_with_racecar.launch">
         <arg name="world_name" value="$(env WORLD_NAME)" />
+        <arg name="gui" value="$(arg gui)"/>
     </include>
 
     <node name="agent" pkg="deepracer_simulation" type="run_evaluation_rl_agent.sh" output="screen" required="true"/>
