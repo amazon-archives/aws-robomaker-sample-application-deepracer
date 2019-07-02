@@ -37,12 +37,12 @@
             }
           },
           "robotSoftwareSuite": {
-            "version": "Kinetic",
+            "version": "<capitalised name of ROS distribution, e.g. Kinetic>",
             "name": "ROS"
           },
           "simulationSoftwareSuite": {
             "name": "Gazebo",
-            "version": "7"
+            "version": "<gazebo version number, e.g. 7>"
           },
           "renderingEngine": {
             "name": "OGRE",
@@ -83,12 +83,12 @@
             }
           },
           "robotSoftwareSuite": {
-            "version": "Kinetic",
+            "version": "<capitalised name of ROS distribution, e.g. Kinetic>",
             "name": "ROS"
           },
           "simulationSoftwareSuite": {
             "name": "Gazebo",
-            "version": "7"
+            "version": "<gazebo version number, e.g. 7>"
           },
           "renderingEngine": {
             "name": "OGRE",
