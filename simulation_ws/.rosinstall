@@ -1,1 +1,3 @@
-
+# Amazon ROS2 Deep Racer Simulation package dependencies
+# Gazebo packages
+- git: {local-name: src/deps/gazebo/gazebo_ros_pkgs, uri: 'https://github.com/ros-simulation/gazebo_ros_pkgs.git', version: ros2}
