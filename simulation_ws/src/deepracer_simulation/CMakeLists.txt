@@ -1,19 +1,10 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(deepracer_simulation)
 
-find_package(catkin REQUIRED COMPONENTS
-  gazebo_ros
-)
-
-catkin_package()
-
-###########
-## Build ##
-###########
-
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
+find_package(ament_cmake_ros REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(gazebo_ros REQUIRED)
+find_package(gazebo_ros_pkgs REQUIRED)
 
 #############
 ## Install ##
@@ -24,24 +15,25 @@ install(PROGRAMS
     scripts/run_local_rl_agent.sh
     scripts/run_rollout_rl_agent.sh
     scripts/run_evaluation_rl_agent.sh
-    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    DESTINATION lib/${PROJECT_NAME}
 )
 
-install(DIRECTORY launch/
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+install(DIRECTORY launch config models worlds
+  DESTINATION share/${PROJECT_NAME}
 )
-install(DIRECTORY config/
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
-)
-install(DIRECTORY meshes/
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/meshes
-)
-install(DIRECTORY models/
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/models
-)
-install(DIRECTORY urdf/
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/urdf
-)
-install(DIRECTORY worlds/
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/worlds
-)
+
+################################################################################
+# Test
+################################################################################
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  set(ament_cmake_copyright_FOUND TRUE)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+################################################################################
+# Macro for ament package
+################################################################################
+ament_export_dependencies(rclpy)
+ament_export_dependencies(gazebo_ros)
+ament_package()
