@@ -5,14 +5,14 @@
       <collision name="collision">
         <geometry>
           <mesh>
-            <uri>model://deepracer_simulation/meshes/hard_track/Track3_and_Wall.dae</uri>
+            <uri>model://hard_track/Track3_and_Wall.dae</uri>
           </mesh>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <mesh>
-            <uri>model://deepracer_simulation/meshes/hard_track/Track3_and_Wall.dae</uri>
+            <uri>model://hard_track/Track3_and_Wall.dae</uri>
           </mesh>
         </geometry>
       </visual>

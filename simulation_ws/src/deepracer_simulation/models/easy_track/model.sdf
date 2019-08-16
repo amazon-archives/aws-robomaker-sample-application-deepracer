@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<sdf version="1.4">
+<sdf version="1.5">
 <model name="easy_track">
   <static>true</static>
     <link name="link">
@@ -29,8 +29,8 @@
         </geometry>
         <material>
 		  <script>
-		    <uri>model://deepracer_simulation/meshes/easy_track/scripts</uri>
-            <uri>model://deepracer_simulation/meshes/easy_track/textures</uri>
+		    <uri>model://easy_track/meshes/scripts</uri>
+            <uri>model://easy_track/meshes/textures</uri>
             <name>easy_track/Image</name>
 		  </script>
         </material>
