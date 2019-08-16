@@ -1,0 +1,459 @@
+<sdf version='1.6'>
+  <model name='race_car'>
+    <link name='base_link'>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose frame=''>0.147731 1e-06 0.03006 0 -0 0</pose>
+        <mass>5.003</mass>
+        <inertia>
+          <ixx>0.010642</ixx>
+          <ixy>-2.61343e-07</ixy>
+          <ixz>-1.56806e-05</ixz>
+          <iyy>0.0504502</iyy>
+          <iyz>-4.997e-07</iyz>
+          <izz>0.0586612</izz>
+        </inertia>
+      </inertial>
+      <collision name='base_link_fixed_joint_lump__zed_camera_link_collision'>
+        <pose frame=''>0.2 0 0.13 0 0.273141 0</pose>
+        <geometry>
+          <box>
+            <size>0.033 0.175 0.03</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name='base_link_fixed_joint_lump__chassis_visual'>
+        <pose frame=''>0 0 0.03 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.6 0.6 0.6</scale>
+            <uri>model://racer_car/meshes/chassis.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Red</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__zed_camera_link_visual_1'>
+        <pose frame=''>0.2 0 0.13 0 0.273141 0</pose>
+        <geometry>
+          <box>
+            <size>0.033 0.175 0.03</size>
+          </box>
+        </geometry>
+      </visual>
+      <velocity_decay/>
+      <gravity>1</gravity>
+      <velocity_decay/>
+      <sensor name='zed_camera_left_sensor' type='camera'>
+        <update_rate>15</update_rate>
+        <camera name='zed_camera_left_camera'>
+          <horizontal_fov>1.13</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>B8G8R8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+        </camera>
+        <plugin name='camera_controller' filename='libgazebo_ros_camera.so'>
+          <alwaysOn>1</alwaysOn>
+          <updateRate>15.0</updateRate>
+          <cameraName>/camera/zed</cameraName>
+          <imageTopicName>rgb/image_rect_color</imageTopicName>
+          <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+          <frameName>camera_link</frameName>
+          <hackBaseline>0</hackBaseline>
+          <distortionK1>0.0</distortionK1>
+          <distortionK2>0.0</distortionK2>
+          <distortionK3>0.0</distortionK3>
+          <distortionT1>0.0</distortionT1>
+          <distortionT2>0.0</distortionT2>
+        </plugin>
+        <pose frame=''>0.2 0 0.13 0 0.273141 0</pose>
+      </sensor>
+    </link>
+    <link name='left_rear_wheel'>
+      <pose frame=''>0 0.06 0.03 1.5708 -0 0</pose>
+      <inertial>
+        <pose frame=''>0 0 -0.0125 0 -0 0</pose>
+        <mass>0.34055</mass>
+        <inertia>
+          <ixx>0.00026046</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00026046</iyy>
+          <iyz>0</iyz>
+          <izz>0.00041226</izz>
+        </inertia>
+      </inertial>
+      <collision name='left_rear_wheel_collision'>
+        <pose frame=''>0 0 -0.0125 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.025</length>
+            <radius>0.03</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <kp>1e+06</kp>
+              <kd>1</kd>
+            </ode>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>0.5</mu2>
+              <fdir1>1 0 0</fdir1>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='left_rear_wheel_visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.6 0.6 0.6</scale>
+            <uri>model://racer_car/meshes/left_rear_wheel.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <gravity>1</gravity>
+      <velocity_decay/>
+    </link>
+    <joint name='left_rear_wheel_joint' type='revolute'>
+      <child>left_rear_wheel</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 1 4e-06</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+    <link name='left_steering_hinge'>
+      <pose frame=''>0.195 0.06 0.03 3.14159 1.57079 3.14159</pose>
+      <inertial>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>4e-06</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>4e-06</iyy>
+          <iyz>0</iyz>
+          <izz>4e-06</izz>
+        </inertia>
+      </inertial>
+      <visual name='left_steering_hinge_visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.6 0.6 0.6</scale>
+            <uri>model://racer_car/meshes/left_steering_hinge.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='left_steering_hinge_joint' type='revolute'>
+      <child>left_steering_hinge</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>4e-06 0 1</xyz>
+        <limit>
+          <lower>-1</lower>
+          <upper>1</upper>
+          <effort>10</effort>
+          <velocity>100</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+    <link name='left_front_wheel'>
+      <pose frame=''>0.195 0.06 0.03 -1.57079 1.57079 -3.14159</pose>
+      <inertial>
+        <pose frame=''>0 0 -0.0125 0 -0 0</pose>
+        <mass>0.34055</mass>
+        <inertia>
+          <ixx>0.00026046</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00026046</iyy>
+          <iyz>0</iyz>
+          <izz>0.00041226</izz>
+        </inertia>
+      </inertial>
+      <collision name='left_front_wheel_collision'>
+        <pose frame=''>0 0 -0.0125 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.025</length>
+            <radius>0.03</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <kp>1e+06</kp>
+              <kd>1</kd>
+            </ode>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>0.5</mu2>
+              <fdir1>0 0 1</fdir1>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='left_front_wheel_visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.6 0.6 0.6</scale>
+            <uri>model://racer_car/meshes/left_front_wheel.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <gravity>1</gravity>
+      <velocity_decay/>
+    </link>
+    <joint name='left_front_wheel_joint' type='revolute'>
+      <child>left_front_wheel</child>
+      <parent>left_steering_hinge</parent>
+      <axis>
+        <xyz>4e-06 1 -0</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+    <link name='right_rear_wheel'>
+      <pose frame=''>0 -0.06 0.03 1.5708 -0 0</pose>
+      <inertial>
+        <pose frame=''>0 0 0.0125 0 -0 0</pose>
+        <mass>0.34055</mass>
+        <inertia>
+          <ixx>0.00026046</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00026046</iyy>
+          <iyz>0</iyz>
+          <izz>0.00041226</izz>
+        </inertia>
+      </inertial>
+      <collision name='right_rear_wheel_collision'>
+        <pose frame=''>0 0 0.0125 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.025</length>
+            <radius>0.03</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <kp>1e+06</kp>
+              <kd>1</kd>
+            </ode>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>0.5</mu2>
+              <fdir1>1 0 0</fdir1>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='right_rear_wheel_visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.6 0.6 0.6</scale>
+            <uri>model://racer_car/meshes/right_rear_wheel.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <gravity>1</gravity>
+      <velocity_decay/>
+    </link>
+    <joint name='right_rear_wheel_joint' type='revolute'>
+      <child>right_rear_wheel</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 1 4e-06</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+    <link name='right_steering_hinge'>
+      <pose frame=''>0.195 -0.06 0.03 3.14159 1.57079 3.14159</pose>
+      <inertial>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>4e-06</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>4e-06</iyy>
+          <iyz>0</iyz>
+          <izz>4e-06</izz>
+        </inertia>
+      </inertial>
+      <visual name='right_steering_hinge_visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.6 0.6 0.6</scale>
+            <uri>model://racer_car/meshes/right_steering_hinge.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='right_steering_hinge_joint' type='revolute'>
+      <child>right_steering_hinge</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>4e-06 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+    <link name='right_front_wheel'>
+      <pose frame=''>0.195 -0.06 0.03 -1.57079 1.57079 -3.14159</pose>
+      <inertial>
+        <pose frame=''>0 0 0.0125 0 -0 0</pose>
+        <mass>0.34055</mass>
+        <inertia>
+          <ixx>0.00026046</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00026046</iyy>
+          <iyz>0</iyz>
+          <izz>0.00041226</izz>
+        </inertia>
+      </inertial>
+      <collision name='right_front_wheel_collision'>
+        <pose frame=''>0 0 0.0125 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.025</length>
+            <radius>0.03</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <kp>1e+06</kp>
+              <kd>1</kd>
+            </ode>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>0.5</mu2>
+              <fdir1>0 0 1</fdir1>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='right_front_wheel_visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.6 0.6 0.6</scale>
+            <uri>model://racer_car/meshes/right_front_wheel.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <gravity>1</gravity>
+      <velocity_decay/>
+    </link>
+    <joint name='right_front_wheel_joint' type='revolute'>
+      <child>right_front_wheel</child>
+      <parent>right_steering_hinge</parent>
+      <axis>
+        <xyz>4e-06 1 -0</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+    <static>0</static>
+    <plugin name='gazebo_ros_control' filename='libgazebo_ros_control.so'>
+      <robotNamespace>/racecar</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+    <plugin name='racecar_plugin' filename='libracecar_plugin.so'/>
+  </model>
+</sdf>
