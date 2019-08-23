@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(deepracer_simulation)
 
-find_package(ament_cmake_ros REQUIRED)
+find_package(ament_cmake REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(gazebo_ros REQUIRED)
 find_package(gazebo_ros_pkgs REQUIRED)
@@ -34,6 +34,4 @@ endif()
 ################################################################################
 # Macro for ament package
 ################################################################################
-ament_export_dependencies(rclpy)
-ament_export_dependencies(gazebo_ros)
 ament_package()

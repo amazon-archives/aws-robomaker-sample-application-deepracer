@@ -10,7 +10,6 @@ notifications:
     #- travis-build@platform-notifications.robomaker.aws.a2z.com Uncomment once the build passes
 env:
   matrix:
-  - ROS_DISTRO=dashing ROS_VERSION=2 GAZEBO_VERSION=9 WORKSPACES="robot_ws"
   - ROS_DISTRO=dashing ROS_VERSION=2 GAZEBO_VERSION=9 WORKSPACES="simulation_ws"
   global:
   - SA_NAME=deep-racer
