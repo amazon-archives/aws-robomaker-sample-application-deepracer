@@ -28,11 +28,11 @@
           </plane>
         </geometry>
         <material>
-		  <script>
-		    <uri>model://easy_track/meshes/scripts</uri>
+          <script>
+            <uri>model://easy_track/meshes/scripts</uri>
             <uri>model://easy_track/meshes/textures</uri>
             <name>easy_track/Image</name>
-		  </script>
+          </script>
         </material>
       </visual>
     </link>

@@ -1,18 +1,18 @@
 <?xml version='1.0'?>
-<sdf version='1.4'>
+<sdf version='1.5'>
   <model name="hard_track">
     <link name="link">
       <collision name="collision">
         <geometry>
           <mesh>
-            <uri>model://hard_track/Track3_and_Wall.dae</uri>
+            <uri>model://hard_track/meshes/textures/Track3_and_Wall.dae</uri>
           </mesh>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <mesh>
-            <uri>model://hard_track/Track3_and_Wall.dae</uri>
+            <uri>model://hard_track/meshes/textures/Track3_and_Wall.dae</uri>
           </mesh>
         </geometry>
       </visual>
