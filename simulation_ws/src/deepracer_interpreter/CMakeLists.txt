@@ -1,21 +1,33 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(deepracer_interpreter)
 
-find_package(catkin REQUIRED COMPONENTS
-  gazebo_ros
-  deepracer_msgs
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(gazebo_ros_pkgs REQUIRED)
+find_package(deepracer_msgs REQUIRED)
+find_package(gazebo REQUIRED)
+
+include_directories(${rclcpp_INCLUDE_DIRS}
+                    ${GAZEBO_INCLUDE_DIRS}
+                    ${deepracer_msgs_INCLUDE_DIRS}
 )
 
-catkin_package()
-
-find_package(gazebo REQUIRED)
-include_directories(${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 link_directories(${GAZEBO_LIBRARY_DIRS})
 list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 
 add_library(racecar_plugin SHARED src/racecar_plugin.cc)
-target_link_libraries(racecar_plugin ${GAZEBO_LIBRARIES})
+target_link_libraries(
+  racecar_plugin
+  ${GAZEBO_LIBRARIES}
+  ${deepracer_msgs_LIBRARIES}
+)
 
 install(TARGETS racecar_plugin
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION lib
 )
+
+ament_package()

@@ -5,11 +5,11 @@
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/common/common.hh>
+#include <gazebo_ros/node.hpp>
 #include <ignition/math/Vector3.hh>
 
-#include "ros/ros.h"
-#include "deepracer_msgs/Progress.h"
-
+#include "rclcpp/rclcpp.hpp"
+#include "deepracer_msgs/msg/progress.hpp"
 #include "racecar_plugin.hh"
 
 #if GAZEBO_MAJOR_VERSION >= 9
@@ -22,9 +22,23 @@ void gazebo::RacecarPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr /*_s
 {
   int argc = 0;
   char** argv;
-  ros::init(argc, argv, "progress_tracker");
-  ros::NodeHandle n;
-  chatter_pub = n.advertise<deepracer_msgs::Progress>("progress", 1000);
+
+  /**
+    In ROS 1, each plugin typically had one or more "ros::NodeHandle" instances to interact with ROS.
+    In ROS 2, plugins use "gazebo_ros::Node" instead, which allows each plugin to exist as its own node in the ROS graph,
+    with its own parameters, namespace, loggers, etc.
+
+    gazebo_ros::Node::Get();
+    This will call rclcpp::init if it hasn't been called yet.
+    The node is created the first time this is called.
+    Returns A shared pointer to a #gazebo_ros::Node
+
+    Reference:
+      http://gazebosim.org/tutorials?tut=ros2_overview
+      https://github.com/ros-simulation/gazebo_ros_pkgs/blob/ros2/gazebo_ros/include/gazebo_ros/node.hpp#L53
+  **/
+  auto n = gazebo_ros::Node::Get();
+  chatter_pub = n->create_publisher<deepracer_msgs::msg::Progress>("progress", 1000);
 
 #if GAZEBO_MAJOR_VERSION >= 9
   worldName = _parent->GetWorld()->Name();
@@ -49,7 +63,7 @@ void gazebo::RacecarPlugin::sendProgress(const int off_track, const double yaw, 
                                          const double z, const double progrezz, const double distanceFromCenter,
                                          const double distanceFromBorder1, const double distanceFromBorder2)
 {
-  deepracer_msgs::Progress progress;
+  deepracer_msgs::msg::Progress progress;
   progress.off_track = off_track;
   progress.yaw = yaw;
   progress.x = x;
@@ -60,10 +74,13 @@ void gazebo::RacecarPlugin::sendProgress(const int off_track, const double yaw, 
   progress.distance_from_border_1 = distanceFromBorder1;
   progress.distance_from_border_2 = distanceFromBorder2;
 
-  if (ros::ok)
-  {
-    chatter_pub.publish(progress);
-  }
+  /**
+    ROS 2 Plugins also don't need to worry about spinning the node or keeping callback queues
+    - gazebo_ros handles all that internally.
+    Reference:
+      http://gazebosim.org/tutorials?tut=ros2_overview
+  **/
+  chatter_pub->publish(progress);
 }
 
 #if GAZEBO_MAJOR_VERSION >= 9

@@ -11,8 +11,8 @@
 #include <gazebo/physics/physics.hh>
 #include <ignition/math/Vector3.hh>
 
-#include "ros/ros.h"
-#include "deepracer_msgs/Progress.h"
+#include "rclcpp/rclcpp.hpp"
+#include "deepracer_msgs/msg/progress.hpp"
 
 #if GAZEBO_MAJOR_VERSION >= 9
 #include <ignition/math/Pose3.hh>
@@ -70,7 +70,7 @@ private:
   double EPSILON = 1e-6;
 
 #if GAZEBO_MAJOR_VERSION >= 9
-  ignition::math::Vector3<double> RELATIVE_POSITION_OF_FRONT_OF_CAR = ignition::math::Vector3<double>(0.25, 0, 0);
+  ignition::math::Vector3<double> RELATIVE_POSITION_OF_FRONT_OF_CAR = ignition::math::Vector3<double>(0.0, 0, 0);
 #else
   gazebo::math::Vector3 RELATIVE_POSITION_OF_FRONT_OF_CAR = gazebo::math::Vector3(0.25, 0, 0);
 #endif
@@ -81,7 +81,7 @@ private:
   double prog = 0;
   double lastX = -MAX_VALUE, lastY = -MAX_VALUE;
   std::string worldName;
-  ros::Publisher chatter_pub;
+  rclcpp::Publisher<deepracer_msgs::msg::Progress>::SharedPtr chatter_pub;
 
   // Pointer to the model
   physics::ModelPtr model;

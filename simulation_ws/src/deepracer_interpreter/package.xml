@@ -1,27 +1,26 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>deepracer_interpreter</name>
   <version>1.0.0</version>
   <description>The DeepRacerInterpreter package</description>
   <maintainer email="gouravr@amazon.com">gouravr</maintainer>
   <license>Apache2.0</license>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <build_depend>gazebo_ros</build_depend>
-  <build_depend>deepracer_msgs</build_depend>
-  <build_depend>gazebo</build_depend>
+  <depend>gazebo_ros_pkgs</depend>
+  <depend>deepracer_msgs</depend>
+  <depend>gazebo</depend>
+  <depend>rclcpp</depend>
 
-  <run_depend>gazebo_ros</run_depend>
-  <run_depend>gazebo</run_depend>
-  <run_depend>controller_manager</run_depend>
-  <run_depend>ros_controllers</run_depend>
-  <run_depend>ros_control</run_depend>
-  <run_depend>gazebo_ros_control</run_depend>
-  <run_depend>deepracer_msgs</run_depend>
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>ros_controllers</exec_depend>
+  <exec_depend>ros_control</exec_depend>
+  <exec_depend>gazebo_ros_control</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
+    <build_type>ament_cmake</build_type>
     <gazebo_ros gazebo_model_path="${prefix}/.." />
     <gazebo_ros plugin_path="${prefix}/.." />
   </export>
