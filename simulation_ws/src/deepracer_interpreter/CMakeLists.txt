@@ -30,4 +30,5 @@ install(TARGETS racecar_plugin
   LIBRARY DESTINATION lib
 )
 
+ament_export_dependencies(gazebo_ros_pkgs)
 ament_package()
