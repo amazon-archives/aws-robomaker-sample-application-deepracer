@@ -10,6 +10,7 @@ find_package(rclcpp REQUIRED)
 find_package(gazebo_ros_pkgs REQUIRED)
 find_package(deepracer_msgs REQUIRED)
 find_package(gazebo REQUIRED)
+find_package(gazebo_ros REQUIRED)
 
 include_directories(${rclcpp_INCLUDE_DIRS}
                     ${GAZEBO_INCLUDE_DIRS}
@@ -31,4 +32,5 @@ install(TARGETS racecar_plugin
 )
 
 ament_export_dependencies(gazebo_ros_pkgs)
+ament_export_dependencies(gazebo_ros)
 ament_package()
