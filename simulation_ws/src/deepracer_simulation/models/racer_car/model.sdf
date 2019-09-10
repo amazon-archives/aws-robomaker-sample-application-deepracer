@@ -143,6 +143,8 @@
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
+          <effort>10</effort>
+          <velocity>100</velocity>
         </limit>
         <dynamics>
           <spring_reference>0</spring_reference>
@@ -181,8 +183,8 @@
       <axis>
         <xyz>4e-06 0 1</xyz>
         <limit>
-          <lower>-1</lower>
-          <upper>1</upper>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
           <effort>10</effort>
           <velocity>100</velocity>
         </limit>
@@ -257,6 +259,8 @@
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
+          <effort>10</effort>
+          <velocity>100</velocity>
         </limit>
         <dynamics>
           <spring_reference>0</spring_reference>
@@ -329,6 +333,8 @@
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
+          <effort>10</effort>
+          <velocity>100</velocity>
         </limit>
         <dynamics>
           <spring_reference>0</spring_reference>
@@ -369,6 +375,8 @@
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
+          <effort>10</effort>
+          <velocity>100</velocity>
         </limit>
         <dynamics>
           <spring_reference>0</spring_reference>
@@ -441,6 +449,8 @@
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
+          <effort>10</effort>
+          <velocity>100</velocity>
         </limit>
         <dynamics>
           <spring_reference>0</spring_reference>
@@ -449,11 +459,79 @@
         <use_parent_model_frame>1</use_parent_model_frame>
       </axis>
     </joint>
+ 
+    <! -- steering_wheel link and steering joint is added for ackermann plugin -->
+    <link name="steering_wheel">
+        <pose>0.195 0 0.05 0 0 0</pose>
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.014583300</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.014583300</iyy>
+            <iyz>0</iyz>
+            <izz>0.012500000</izz>
+          </inertia>
+        </inertial>
+
+      </link>
+
+     <joint name="steering_joint" type="revolute">
+        <pose>0.195 0 0.05 0 0 0</pose>
+        <parent>base_link</parent>
+        <child>steering_wheel</child>
+     </joint>
+
     <static>0</static>
-    <plugin name='gazebo_ros_control' filename='libgazebo_ros_control.so'>
-      <robotNamespace>/racecar</robotNamespace>
-      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-    </plugin>
     <plugin name='racecar_plugin' filename='libracecar_plugin.so'/>
+
+    <plugin name='ackermann_drive' filename='libgazebo_ros_ackermann_drive.so'>
+
+        <ros>
+          <namespace>racer_car</namespace>
+          <argument>cmd_vel:=cmd_vel</argument>
+          <argument>odom:=odom</argument>
+          <argument>distance:=distance</argument>
+        </ros>
+
+        <update_rate>100.0</update_rate>
+
+        <!-- wheels -->
+        <front_left_joint>left_front_wheel_joint</front_left_joint>
+        <front_right_joint>right_front_wheel_joint</front_right_joint>
+        <rear_left_joint>left_rear_wheel_joint</rear_left_joint>
+        <rear_right_joint>right_rear_wheel_joint</rear_right_joint>
+        <left_steering_joint>left_steering_hinge_joint</left_steering_joint>
+        <right_steering_joint>right_steering_hinge_joint</right_steering_joint>
+        <steering_wheel_joint>steering_joint</steering_wheel_joint>
+
+        <!-- Max absolute steer angle for tyre in radians-->
+        <!-- Any cmd_vel angular z greater than this would be capped -->
+        <max_steer>0.6458</max_steer>
+
+        <!-- Max absolute steering angle of steering wheel -->
+        <max_steering_angle>7.85</max_steering_angle>
+
+        <!-- Max absolute linear speed in m/s -->
+        <max_speed>20</max_speed>
+
+        <!-- PID tuning -->
+        <left_steering_pid_gain>0.85 0.0 0.5</left_steering_pid_gain>
+        <left_steering_i_range>0 0</left_steering_i_range>
+        <right_steering_pid_gain>0.85 0.0 0.5</right_steering_pid_gain>
+        <right_steering_i_range>0 0</right_steering_i_range>
+        <linear_velocity_pid_gain>0.8 0.0 0.0</linear_velocity_pid_gain>
+        <linear_velocity_i_range>0 0</linear_velocity_i_range>
+
+        <!-- output -->
+        <publish_odom>true</publish_odom>
+        <publish_odom_tf>true</publish_odom_tf>
+        <publish_wheel_tf>true</publish_wheel_tf>
+        <publish_distance>true</publish_distance>
+
+        <odometry_frame>odom_demo</odometry_frame>
+        <robot_base_frame>base_link</robot_base_frame>
+      </plugin>
   </model>
 </sdf>
