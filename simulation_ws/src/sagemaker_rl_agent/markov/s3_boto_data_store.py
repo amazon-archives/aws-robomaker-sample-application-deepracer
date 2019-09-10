@@ -43,6 +43,23 @@ class S3BotoDataStore(DataStore):
     def undeploy(self) -> bool:
         return True
 
+    def lock(self):
+        try:
+            s3_client = self._get_client()
+            s3_client.upload_fileobj(Fileobj=io.BytesIO(b''),
+                                     Bucket=self.params.bucket,
+                                     Key=self._get_s3_key(self.params.lock_file))
+        except Exception as e:
+            raise e
+
+    def unlock(self):
+        try:
+            s3_client = self._get_client()
+            s3_client.delete_object(Bucket=self.params.bucket,
+                                    Key=self._get_s3_key(self.params.lock_file))
+        except Exception as e:
+            raise e
+
     def save_to_store(self):
         try:
             s3_client = self._get_client()
@@ -51,12 +68,10 @@ class S3BotoDataStore(DataStore):
                 utils.write_frozen_graph(self.graph_manager, self.params.checkpoint_dir)
 
             # Delete any existing lock file
-            s3_client.delete_object(Bucket=self.params.bucket, Key=self._get_s3_key(self.params.lock_file))
+            self.unlock()
 
             # We take a lock by writing a lock file to the same location in S3
-            s3_client.upload_fileobj(Fileobj=io.BytesIO(b''),
-                                     Bucket=self.params.bucket,
-                                     Key=self._get_s3_key(self.params.lock_file))
+            self.lock()
 
             # Start writing the model checkpoints to S3
             checkpoint_file = None
@@ -82,7 +97,7 @@ class S3BotoDataStore(DataStore):
                                   Key=self._get_s3_key(rel_name))
 
             # Release the lock by deleting the lock file from S3
-            s3_client.delete_object(Bucket=self.params.bucket, Key=self._get_s3_key(self.params.lock_file))
+            self.unlock()
 
             checkpoint = self._get_current_checkpoint()
             if checkpoint:

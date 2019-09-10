@@ -2,6 +2,8 @@
 This is single machine training worker. It starts a local training and stores the model in S3.
 """
 
+import sys, os, signal
+
 import argparse
 import copy
 
@@ -13,7 +15,6 @@ import imp
 import markov
 from markov import utils
 import markov.environments
-import os
 
 MARKOV_DIRECTORY = os.path.dirname(markov.__file__)
 CUSTOM_FILES_PATH = "./custom_files"
@@ -39,6 +40,16 @@ def add_items_to_dict(target_dict, source_dict):
 
 def should_stop_training_based_on_evaluation():
     return False
+
+class SigTermHandler:
+    def __init__(self, data_store):
+        self.data_store = data_store
+        signal.signal(signal.SIGINT, self.sigterm_exit)
+        signal.signal(signal.SIGTERM, self.sigterm_exit)
+
+    def sigterm_exit(self, signum, frame):
+        self.data_store.unlock()
+        sys.exit(0)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -97,6 +108,8 @@ def main():
                                                            checkpoint_dir=args.local_model_directory,
                                                            aws_region=args.aws_region)
     data_store = S3BotoDataStore(data_store_params_instance)
+
+    sigterm_handler = SigTermHandler(data_store)
 
     if args.save_frozen_graph:
         data_store.graph_manager = graph_manager
