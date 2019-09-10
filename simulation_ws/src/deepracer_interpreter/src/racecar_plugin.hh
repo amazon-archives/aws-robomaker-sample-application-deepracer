@@ -70,7 +70,7 @@ private:
   double EPSILON = 1e-6;
 
 #if GAZEBO_MAJOR_VERSION >= 9
-  ignition::math::Vector3<double> RELATIVE_POSITION_OF_FRONT_OF_CAR = ignition::math::Vector3<double>(0.0, 0, 0);
+  ignition::math::Vector3<double> RELATIVE_POSITION_OF_FRONT_OF_CAR = ignition::math::Vector3<double>(0.25, 0, 0);
 #else
   gazebo::math::Vector3 RELATIVE_POSITION_OF_FRONT_OF_CAR = gazebo::math::Vector3(0.25, 0, 0);
 #endif
