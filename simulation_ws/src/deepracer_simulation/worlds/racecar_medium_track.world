@@ -42,7 +42,7 @@
     </include>
 
     <include>
-      <pose>1.7 0.6 0.05 0.0 0.0 1.5</pose>
+      <pose>0.0 0.0 0.05 0.0 0.0 1.5</pose>
       <uri>model://racer_car</uri>
       <name>racecar</name>
     </include>
