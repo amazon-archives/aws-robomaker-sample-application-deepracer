@@ -1,7 +1,7 @@
 from __future__ import print_function
 
+from geometry_msgs.msg import Twist
 import time
-
 # only needed for fake driver setup
 import boto3
 # gym
@@ -19,10 +19,11 @@ SAGEMAKER_TRAINING_WORKER = "SAGEMAKER_TRAINING_WORKER"
 node_type = os.environ.get("NODE_TYPE", SIMULATION_WORKER)
 
 if node_type == SIMULATION_WORKER:
-    import rospy
-    from ackermann_msgs.msg import AckermannDriveStamped
-    from gazebo_msgs.msg import ModelState
-    from gazebo_msgs.srv import SetModelState
+    import rclpy
+    # from ackermann_msgs.msg import AckermannDriveStamped
+
+    from gazebo_msgs.srv import SetEntityState
+    from gazebo_msgs.msg import EntityState
 
     from sensor_msgs.msg import Image as sensor_image
     from deepracer_msgs.msg import Progress
@@ -74,17 +75,23 @@ class DeepRacerEnv(gym.Env):
 
         if node_type == SIMULATION_WORKER:
             # ROS initialization
-            self.ack_publisher = rospy.Publisher('/vesc/low_level/ackermann_cmd_mux/output',
-                                                 AckermannDriveStamped, queue_size=100)
-            self.racecar_service = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
-            rospy.init_node('rl_coach', anonymous=True)
+            rclpy.init()
+            self.node = rclpy.create_node('rl_coach')
+            '''
+            Wheel controller used in ROS1 was not available in ROS2.
+            So used ackermann plugin here. It rquires velocity message of type Twist.
+            '''
+            # self.ack_publisher = self.node.create_publisher(AckermannDriveStamped, '/vesc/low_level/ackermann_cmd_mux/output', 10)
+            self.ack_publisher = self.node.create_publisher(Twist, '/racer_car/cmd_vel', 10)
+            self.racecar_service = self.node.create_client(SetEntityState, '/set_entity_state')
 
             # Subscribe to ROS topics and register callbacks
-            rospy.Subscriber('/progress', Progress, self.callback_progress)
-            rospy.Subscriber('/camera/zed/rgb/image_rect_color', sensor_image, self.callback_image)
-            self.world_name = rospy.get_param('WORLD_NAME')
+            self.node.create_subscription(Progress, '/progress', self.callback_progress, 10)
+            # self.node.create_subscription(sensor_image, '/camera/zed/rgb/image_rect_color', self.callback_image, 10)
+            self.node.create_subscription(sensor_image, '/zed_camera_left_sensor/image_raw', self.callback_image, 10)
+            self.world_name = os.environ.get("WORLD_NAME",'easy_track')
             self.set_waypoints()
-            self.aws_region = rospy.get_param('ROS_AWS_REGION')
+            self.aws_region = os.environ.get("ROS_AWS_REGION", "us-east-1")
 
         self.reward_in_episode = 0
         self.prev_progress = 0
@@ -113,36 +120,38 @@ class DeepRacerEnv(gym.Env):
         return self.next_state
 
     def racecar_reset(self):
-        rospy.wait_for_service('gazebo/set_model_state')
+        while not self.racecar_service.wait_for_service(timeout_sec=1.0):
+             self.node.get_logger().info('service not available, waiting again...')
 
-        modelState = ModelState()
-        modelState.pose.position.z = 0
-        modelState.pose.orientation.x = 0
-        modelState.pose.orientation.y = 0
-        modelState.pose.orientation.z = 0
-        modelState.pose.orientation.w = 0  # Use this to randomize the orientation of the car
-        modelState.twist.linear.x = 0
-        modelState.twist.linear.y = 0
-        modelState.twist.linear.z = 0
-        modelState.twist.angular.x = 0
-        modelState.twist.angular.y = 0
-        modelState.twist.angular.z = 0
-        modelState.model_name = 'racecar'
+        entityState = SetEntityState.Request()
+        entityState.state.pose.position.z = 0.0
+        entityState.state.pose.orientation.x = 0.0
+        entityState.state.pose.orientation.y = 0.0
+        entityState.state.pose.orientation.z = 0.0
+        entityState.state.pose.orientation.w = 0.0  # Use this to randomize the orientation of the car
+        entityState.state.twist.linear.x = 0.0
+        entityState.state.twist.linear.y = 0.0
+        entityState.state.twist.linear.z = 0.0
+        entityState.state.twist.angular.x = 0.0
+        entityState.state.twist.angular.y = 0.0
+        entityState.state.twist.angular.z = 0.0
+        entityState.state.name = 'racecar'
 
         if self.world_name.startswith(MEDIUM_TRACK_WORLD):
-            modelState.pose.position.x = -1.40
-            modelState.pose.position.y = 2.13
+            entityState.state.pose.position.x = -1.40
+            entityState.state.pose.position.y = 2.13
         elif self.world_name.startswith(EASY_TRACK_WORLD):
-            modelState.pose.position.x = -1.44
-            modelState.pose.position.y = -0.06
+            entityState.state.pose.position.x = -1.44
+            entityState.state.pose.position.y = -0.06
         elif self.world_name.startswith(HARD_TRACK_WORLD):
-            modelState.pose.position.x = 1.75
-            modelState.pose.position.y = 0.6
+            entityState.state.pose.position.x = 1.75
+            entityState.state.pose.position.y = 0.6
         else:
             raise ValueError("Unknown simulation world: {}".format(self.world_name))
 
-        self.racecar_service(modelState)
+        self.racecar_service.call_async(entityState)
         time.sleep(SLEEP_AFTER_RESET_TIME_IN_SECOND)
+        rclpy.spin_once(self.node)
         self.progress_at_beginning_of_race = self.progress
 
     def step(self, action):
@@ -153,7 +162,6 @@ class DeepRacerEnv(gym.Env):
         self.reward = None
         self.done = False
         self.next_state = None
-
         steering_angle = float(action[0])
         throttle = float(action[1])
         self.steps += 1
@@ -179,11 +187,16 @@ class DeepRacerEnv(gym.Env):
         self.distance_from_border_2 = data.distance_from_border_2
 
     def send_action(self, steering_angle, throttle):
-        ack_msg = AckermannDriveStamped()
-        ack_msg.header.stamp = rospy.Time.now()
-        ack_msg.drive.steering_angle = steering_angle
-        ack_msg.drive.speed = throttle
-        self.ack_publisher.publish(ack_msg)
+        # ack_msg = AckermannDriveStamped()
+        # ack_msg.header.stamp = self.node.get_clock().now()
+        # ack_msg.drive.steering_angle = steering_angle
+        # ack_msg.drive.speed = throttle
+        speed = Twist()
+        speed.linear.x = float(throttle)
+        speed.angular.z = float(steering_angle)
+        self.ack_publisher.publish(speed)
+
+        # self.ack_publisher.publish(ack_msg)
 
     def reward_function(self, on_track, x, y, distance_from_center, car_orientation, progress, steps,
                         throttle, steering, track_width, waypoints, closest_waypoints):
@@ -199,15 +212,17 @@ class DeepRacerEnv(gym.Env):
         # Wait till we have a image from the camera
         while not self.image:
             time.sleep(SLEEP_WAITING_FOR_IMAGE_TIME_IN_SECOND)
-
+            rclpy.spin_once(self.node)
+        rclpy.spin_once(self.node)
         # Car environment spits out BGR images by default. Converting to the
         # image to RGB.
-        image = Image.frombytes('RGB', (self.image.width, self.image.height),
-                                self.image.data, 'raw', 'BGR', 0, 1)
+        image_data = np.array(self.image.data)
+        image = Image.frombuffer('RGB', (self.image.width, self.image.height),
+                                image_data, 'raw', 'BGR', 0, 1)
         # resize image ans perform anti-aliasing
         image = image.resize(TRAINING_IMAGE_SIZE, resample=2).convert("RGB")
         state = np.array(image)
-
+        rclpy.spin_once(self.node)
         on_track = self.on_track
         total_progress = self.progress - self.progress_at_beginning_of_race
         done = False
@@ -328,20 +343,20 @@ class DeepRacerDiscreteEnv(DeepRacerEnv):
 
         # Convert discrete to continuous
         if action == 0:  # move left
-            steering_angle = 0.8
-            throttle = 0.3
+            steering_angle = 0.5
+            throttle =0.15
         elif action == 1:  # move right
-            steering_angle = -0.8  # -1 #-0.5 #-1
-            throttle = 0.3
+            steering_angle = -0.5  # -1 #-0.5 #-1
+            throttle = 0.15
         elif action == 2:  # straight
             steering_angle = 0
-            throttle = 0.3
+            throttle = 0.15
         elif action == 3:  # move left
-            steering_angle = 0.4
-            throttle = 0.3
+            steering_angle = 0.3
+            throttle = 0.15
         elif action == 4:  # move right
-            steering_angle = -0.4  # -1 #-0.5 #-1
-            throttle = 0.3
+            steering_angle = -0.3  # -1 #-0.5 #-1
+            throttle = 0.15
         else:  # should not be here
             raise ValueError("Invalid action")
 
