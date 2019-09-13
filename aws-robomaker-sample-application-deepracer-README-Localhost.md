@@ -82,7 +82,7 @@ Get source code of Deepracer application and build as below commands.
 Need to set below Environment variables before Launch application:
 
 # Note: Use your own S3 Bucket and its region, AWS keys, model S3 prefix for traind model to avoid overriding.
-1. export MARKOV_PRESET_FILE="deepracer.py" MODEL_S3_BUCKET="akhilesh-deepracer-bucket" MODEL_S3_PREFIX="model-store/local_model" ROS_AWS_REGION="us-east-1" AWS_ACCESS_KEY_ID="AKIAIFWGV42WVDTIPAXQ" AWS_SECRET_ACCESS_KEY="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"
+1. export MARKOV_PRESET_FILE="deepracer.py" MODEL_S3_BUCKET=<name_of_the_S3_bucket> MODEL_S3_PREFIX=<s3_path_where_you_want_to_store> ROS_AWS_REGION=<aws_region> AWS_ACCESS_KEY_ID=<access_key_id> AWS_SECRET_ACCESS_KEY=<secret_access_key>
 
 2. export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/gazebo-9/plugins/
 
