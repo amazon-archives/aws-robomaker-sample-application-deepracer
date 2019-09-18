@@ -14,20 +14,49 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os
-
 from ament_index_python.packages import get_package_share_directory
+import launch
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess
+from launch.actions import DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription
+from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
-    world_name = os.environ.get('WORLD_NAME')
+    world_name = os.environ.get('WORLD_NAME', 'easy_track')
     world_file_name = 'racecar_' + str(world_name) + '.world'
-    world = os.path.join(get_package_share_directory('deepracer_simulation'), 'worlds', world_file_name)
-    return LaunchDescription([       
-        ExecuteProcess(
-            cmd=['gazebo', '--verbose', world, '-s', 'libgazebo_ros_init.so','libgazebo_ros_state.so'],
-            output='screen'),
+
+    use_sim_time = launch.substitutions.LaunchConfiguration('use_sim_time', default='false')
+    deepracer_pkg_share_dir = get_package_share_directory('deepracer_simulation')
+    gazebo_ros = get_package_share_directory('gazebo_ros')
+
+    gazebo_client = launch.actions.IncludeLaunchDescription(
+    launch.launch_description_sources.PythonLaunchDescriptionSource(
+            os.path.join(gazebo_ros, 'launch', 'gzclient.launch.py')),
+        condition=launch.conditions.IfCondition(launch.substitutions.LaunchConfiguration('gui'))
+    )
+    gazebo_server = launch.actions.IncludeLaunchDescription(
+        launch.launch_description_sources.PythonLaunchDescriptionSource(
+            os.path.join(gazebo_ros, 'launch', 'gzserver.launch.py'))
+    )
+    return LaunchDescription([
+        DeclareLaunchArgument(
+          'world',
+          default_value=[os.path.join(deepracer_pkg_share_dir, 'worlds', world_file_name), ''],
+          description='SDF world file'),
+        DeclareLaunchArgument(
+            name='gui',
+            default_value='true'
+        ),
+        DeclareLaunchArgument('verbose', default_value='true',
+                              description='Set "true" to increase messages written to terminal.'),
+        DeclareLaunchArgument('gdb', default_value='false',
+                              description='Set "true" to run gzserver with gdb'),
+        DeclareLaunchArgument('state', default_value='true',
+                              description='Set "false" not to load "libgazebo_ros_state.so"'),
+        gazebo_server,
+        gazebo_client
     ])
 
 if __name__ == '__main__':
