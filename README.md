@@ -8,18 +8,21 @@ Keywords: Reinforcement learning, AWS, RoboMaker
 
 ![deepracer-hard-track-world.jpg](docs/images/deepracer-hard-track-world.jpg)
 
+
 ## Requirements
 
-- ROS Kinetic / Melodic (optional) - To run the simulation locally. Other distributions of ROS may work, however they have not been tested
+- ROS Dashing - To run the simulation locally (other distributions of ROS may work, but they have not been tested)
 - Gazebo (optional) - To run the simulation locally
 - An AWS S3 bucket - To store the trained reinforcement learning model
 - AWS RoboMaker - To run the simulation and to deploy the trained model to the robot
 
+
 ## AWS Account Setup
 
 ### AWS Credentials
-You will need to create an AWS Account and configure the credentials to be able to communicate with AWS services. You may find [AWS Configuration and Credential Files](https://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html) helpful.
 
+You will need to create an AWS Account and configure the credentials to be able to communicate with AWS services.
+You may find [AWS Configuration and Credential Files](https://docs.aws.amazon.com/cli/latest/userguide/cli-config-files.html) helpful.
 
 ### AWS Permissions
 
@@ -49,6 +52,7 @@ To train the reinforcement learning model in simulation, you need an IAM role wi
 }
 ```
 
+
 ## Usage
 
 ### Training the model
@@ -65,13 +69,12 @@ colcon bundle
 
 #### Running the simulation
 
-
 The following environment variables must be set when you run your simulation:
 
 - `MARKOV_PRESET_FILE` - Defines the hyperparameters of the reinforcement learning algorithm. This should be set to `deepracer.py`.
 - `MODEL_S3_BUCKET` - The name of the S3 bucket in which you want to store the trained model.
 - `MODEL_S3_PREFIX` - The path where you want to store the model.
-- `WORLD_NAME` - The track to train the model on. Can be one of easy_track, medium_track, or hard_track.
+- `WORLD_NAME` - The track to train the model on. Can be one of `easy_track`, `medium_track`, or `hard_track`.
 - `ROS_AWS_REGION` - The region of the S3 bucket in which you want to store the model.
 - `AWS_ACCESS_KEY_ID` - The access key for the role you created in the "AWS Permissions" section
 - `AWS_SECRET_ACCESS_KEY` - The secret access key for the role you created in the "AWS Permissions" section
@@ -80,8 +83,9 @@ The following environment variables must be set when you run your simulation:
 Once the environment variables are set, you can run local training using the roslaunch command
 
 ```bash
+source /usr/share/gazebo/setup.sh
 source simulation_ws/install/setup.sh
-roslaunch deepracer_simulation local_training.launch
+ros2 launch deepracer_simulation local_training.launch.py
 ```
 
 #### Seeing your robot learn
@@ -102,12 +106,13 @@ You can reuse the bundle from the training phase again in the simulation phase.
 
 #### Running the simulation
 
-The evaluation phase requires that the same environment variables be set as in the training phase. Once the environment variables are set, you can run
-evaluation using the roslaunch command
+The evaluation phase requires that the same environment variables be set as in the training phase. Once the environment variables are set,
+you can run evaluation using the roslaunch command
 
 ```bash
+source /usr/share/gazebo/setup.sh
 source simulation_ws/install/setup.sh
-roslaunch deepracer_simulation evaluation.launch
+ros2 launch deepracer_simulation evaluation.launch.py
 ```
 
 ### Troubleshooting
@@ -118,6 +123,7 @@ The training algorithm has two phases. The first is when the reinforcement learn
 while the second is when the algorithm uses the information gathered in the first phase to improve the model. In the second
 phase, no new commands are sent to the car, meaning it will appear as if it is stopped, spinning in circles, or drifting off
 aimlessly.
+
 
 ## Using this sample with AWS RoboMaker
 
@@ -142,10 +148,12 @@ You'll need to upload this artifact to an S3 bucket. You can then use the bundle
 [create a simulation application](https://docs.aws.amazon.com/robomaker/latest/dg/create-simulation-application.html),
 and [create a simulation job](https://docs.aws.amazon.com/robomaker/latest/dg/create-simulation-job.html) in AWS RoboMaker.
 
+
 ## License
 
 Most of this code is licensed under the MIT-0 no-attribution license. However, the sagemaker_rl_agent package is
 licensed under Apache 2. See LICENSE.txt for further information.
+
 
 ## How to Contribute
 
