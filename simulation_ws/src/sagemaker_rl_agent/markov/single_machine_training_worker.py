@@ -4,6 +4,7 @@ This is single machine training worker. It starts a local training and stores th
 
 import sys, os, signal
 
+from tempfile import gettempdir
 import argparse
 import copy
 
@@ -17,7 +18,7 @@ from markov import utils
 import markov.environments
 
 MARKOV_DIRECTORY = os.path.dirname(markov.__file__)
-CUSTOM_FILES_PATH = "./custom_files"
+CUSTOM_FILES_PATH = os.path.join(gettempdir(), "custom_files/")
 
 if not os.path.exists(CUSTOM_FILES_PATH):
     os.makedirs(CUSTOM_FILES_PATH)
@@ -60,7 +61,7 @@ def main():
     parser.add_argument('-c', '--local_model_directory',
                         help='(string) Path to a folder containing a checkpoint to restore the model from.',
                         type=str,
-                        default=os.environ.get("LOCAL_MODEL_DIRECTORY", "./checkpoint"))
+                        default=os.environ.get("LOCAL_MODEL_DIRECTORY", os.path.join(gettempdir(), "checkpoint/")))
     parser.add_argument('-n', '--num_workers',
                         help="(int) Number of workers for multi-process based agents, e.g. A3C",
                         default=1,

@@ -1,6 +1,7 @@
 import argparse
 import os
 import logging
+from tempfile import gettempdir
 import sys
 import imp
 
@@ -12,7 +13,7 @@ from markov.s3_boto_data_store import S3BotoDataStoreParameters, S3BotoDataStore
 import markov.environments
 from markov import utils
 
-CUSTOM_FILES_PATH = "robomaker"
+CUSTOM_FILES_PATH = os.path.join(gettempdir(), "robomaker/")
 PRESET_LOCAL_PATH = os.path.join(CUSTOM_FILES_PATH, "presets/")
 ENVIRONMENT_LOCAL_PATH = os.path.join(CUSTOM_FILES_PATH, "environments/")
 
@@ -57,7 +58,7 @@ def main():
     parser.add_argument('-c', '--local-model-directory',
                         help='(string) Path to a folder containing a checkpoint to restore the model from.',
                         type=str,
-                        default='./checkpoint')
+                        default=os.path.join(gettempdir(), "checkpoint/"))
 
     args = parser.parse_args()
     data_store_params_instance = S3BotoDataStoreParameters(bucket_name=args.model_s3_bucket,

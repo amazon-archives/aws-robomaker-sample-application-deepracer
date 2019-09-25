@@ -3,8 +3,8 @@ This is a rollout training worker. It starts a local training and stores the mod
 """
 
 import argparse
+from tempfile import gettempdir
 import math
-
 import random
 
 from markov.s3_boto_data_store import S3BotoDataStoreParameters, S3BotoDataStore
@@ -19,7 +19,7 @@ from markov import utils
 import markov.environments
 import os
 
-CUSTOM_FILES_PATH = "robomaker"
+CUSTOM_FILES_PATH = os.path.join(gettempdir(), "robomaker/")
 PRESET_LOCAL_PATH = os.path.join(CUSTOM_FILES_PATH, "presets/")
 ENVIRONMENT_LOCAL_PATH = os.path.join(CUSTOM_FILES_PATH, "environments/")
 TRAINER_REDIS_PORT = 6379
@@ -59,7 +59,7 @@ def main():
     parser.add_argument('-c', '--local-model-directory',
                         help='(string) Path to a folder containing a checkpoint to restore the model from.',
                         type=str,
-                        default=os.environ.get("LOCAL_MODEL_DIRECTORY", "./checkpoint"))
+                        default=os.environ.get("LOCAL_MODEL_DIRECTORY", os.path.join(gettempdir(), "checkpoint/")))
     parser.add_argument('-n', '--num-rollout-workers',
                         help="(int) Number of workers for multi-process based agents, e.g. A3C",
                         default=os.environ.get("NUMBER_OF_ROLLOUT_WORKERS", 1),
