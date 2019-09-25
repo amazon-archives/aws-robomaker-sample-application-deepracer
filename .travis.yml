@@ -46,11 +46,11 @@ deploy:
   skip_cleanup: true
   wait-until-deployed: true
   on:
-    branch: master
+    branch: ros1
   upload-dir: travis/${SA_NAME}/${ROS_DISTRO}/gazebo${GAZEBO_VERSION}
 - provider: script
   script: bash .ros_ci/codepipeline_deploy.sh
   on:
-    branch: master
+    branch: ros1
 after_deploy:
 - ".ros_ci/post_deploy.sh"
