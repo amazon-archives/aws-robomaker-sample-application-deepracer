@@ -155,8 +155,9 @@ class S3BotoDataStore(DataStore):
                         continue
 
                     # Found a checkpoint to be downloaded
+                    model_checkpoint_file = os.path.basename(checkpoint.model_checkpoint_path)
                     response = s3_client.list_objects_v2(Bucket=self.params.bucket,
-                                                         Prefix=self._get_s3_key(checkpoint.model_checkpoint_path))
+                                                         Prefix=self._get_s3_key(model_checkpoint_file))
                     if "Contents" in response:
                         num_files = 0
                         for obj in response["Contents"]:
@@ -268,5 +269,5 @@ class S3BotoDataStore(DataStore):
             raise e
 
     def _get_checkpoint_number(self, checkpoint):
-        checkpoint_relative_path = checkpoint.model_checkpoint_path
-        return int(checkpoint_relative_path.split('_Step')[0])
+        model_checkpoint_file = os.path.basename(checkpoint.model_checkpoint_path)
+        return int(model_checkpoint_file.split('_Step')[0])
