@@ -4,6 +4,12 @@
 
     <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so"/>
 
+    <gui>
+      <camera name="default_camera">
+        <pose>8.936479 -2.808408 4.441138 0 0.583643 2.348195</pose>
+      </camera>
+    </gui>
+
     <scene>
       <ambient>0.5 0.5 0.5 1.0</ambient>
       <shadows>0</shadows>
